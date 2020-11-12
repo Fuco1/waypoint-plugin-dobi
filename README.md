@@ -10,7 +10,7 @@ Builder plugin for [HashiCorp Waypoint](https://www.waypointproject.io/).
 meta:
   project: project
 
-image=split:
+image=app:
   image: registry.gitlab.com/user/app
   pull-base-image-on-build: true
   cache-from:
@@ -57,7 +57,7 @@ waypoint build
  │  ---> 7c055d74d442
  │ Successfully built 7c055d74d442
  │ Successfully tagged registry.gitlab.com/user/app:develop
- │ [image:build split] registry.gitlab.com/user/app Create
+ │ [image:build app] registry.gitlab.com/user/app Create
 ```
 
 ## Build
