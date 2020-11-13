@@ -15,6 +15,7 @@ import (
 type BuildConfig struct {
 	Image string `hcl:"image"`
 	Env map[string]string `hcl:"env,optional"`
+	Push bool `hcl:"push,optional"`
 }
 
 type Builder struct {
@@ -91,9 +92,18 @@ func (b *Builder) build(ctx context.Context, ui terminal.UI, log hclog.Logger) (
 	}()
 
 	s = sg.Add("Initializing dobi build context")
+	var command string
+	if (b.config.Push) {
+		command = "push"
+	} else {
+		command = "build"
+	}
+
+	subcommand := fmt.Sprintf("%s:%s", b.config.Image, command)
+
 	cmd := exec.Command(
 		"dobi",
-		fmt.Sprintf("%s:build", b.config.Image),
+		subcommand,
 	)
 
 	cmd.Env = os.Environ()
@@ -105,7 +115,7 @@ func (b *Builder) build(ctx context.Context, ui terminal.UI, log hclog.Logger) (
 	s.Done()
 
 
-	s = sg.Add(fmt.Sprintf("Executing command: dobi %s:build", b.config.Image))
+	s = sg.Add(fmt.Sprintf("Executing command: dobi %s", subcommand))
 
 	cmd.Stdout = s.TermOutput()
 	cmd.Stderr = cmd.Stdout
